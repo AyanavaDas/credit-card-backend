@@ -14,4 +14,6 @@ public interface IApplicationService {
     Boolean status(Integer Id);
 
     Notification Notify(Application application);
+
+    Iterable<Application> getAllApplications();
 }

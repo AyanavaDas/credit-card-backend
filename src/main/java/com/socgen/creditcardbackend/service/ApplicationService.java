@@ -53,8 +53,14 @@ public class ApplicationService implements IApplicationService {
     @Override
     public Notification Notify(Application application)
     {
-        Notification newNotification = new Notification("Your Credit Card is approved!",application.getCustomer().getId());
+        Notification newNotification = new Notification("Your Credit Card for application number #"+application.getId()+" is approved !",application.getCustomer().getId());
         return notificationRepository.save(newNotification);
 
+    }
+
+    @Override
+    public Iterable<Application> getAllApplications()
+    {
+        return applicationRepository.findAll();
     }
 }

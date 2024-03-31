@@ -53,6 +53,7 @@ public class CustomerController {
         return new ResponseEntity<Integer>(id,HttpStatus.OK);
     }
 
+    @CrossOrigin(origins ="http://localhost:4200")
     @GetMapping("/notifications/{id}")
     public ResponseEntity<List<Notification>> getNotifications(@PathVariable("id") Integer Id)
     {
