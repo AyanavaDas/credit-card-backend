@@ -1,5 +1,6 @@
 package com.socgen.creditcardbackend.controller;
 
+import com.socgen.creditcardbackend.dto.ApproverDto;
 import com.socgen.creditcardbackend.model.Approver;
 import com.socgen.creditcardbackend.service.IApproverService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +15,11 @@ import java.util.Optional;
 public class ApproverController {
     @Autowired
     private IApproverService approverService;
-    @PostMapping("/add/{firstName}/{lastName}")
-    public ResponseEntity<Integer> addNewApprover(@PathVariable("firstName") String FirstName,
-                                                  @PathVariable("lastName") String LastName)
+    @PostMapping("/add")
+    public ResponseEntity<Approver> addNewApprover(@RequestBody ApproverDto approverDto)
     {
-        Approver approver = new Approver(FirstName,LastName);
-        Integer id = approverService.addApprover(approver);
-        return new ResponseEntity<Integer>(id, HttpStatus.OK);
+        Approver approver = new Approver(approverDto.getFirstName(), approverDto.getLastName());
+        return new ResponseEntity<Approver>(approverService.addApprover(approver), HttpStatus.CREATED);
     }
 
     @GetMapping("/get/{id}")

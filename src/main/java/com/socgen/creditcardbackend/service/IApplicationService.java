@@ -5,7 +5,7 @@ import com.socgen.creditcardbackend.model.Customer;
 import com.socgen.creditcardbackend.model.Notification;
 
 public interface IApplicationService {
-    Integer applyForCreditCard(Customer customer);
+    Application applyForCreditCard(Customer customer);
 
     Boolean isValidApplication(Integer Id);
 

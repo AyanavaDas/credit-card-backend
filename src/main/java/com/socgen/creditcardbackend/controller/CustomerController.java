@@ -1,63 +1,76 @@
 package com.socgen.creditcardbackend.controller;
 
+import com.socgen.creditcardbackend.dto.CustomerDto;
+import com.socgen.creditcardbackend.exception.InvalidCustomerDetails;
+import com.socgen.creditcardbackend.model.Application;
 import com.socgen.creditcardbackend.model.Customer;
 import com.socgen.creditcardbackend.model.Notification;
 import com.socgen.creditcardbackend.service.ICustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/customer")
 public class CustomerController {
     @Autowired
     private ICustomerService customerService;
-    @PostMapping("/add/{firstName}/{lastName}/{number}/{email}")
-    public ResponseEntity<Integer> addNewCustomer(@PathVariable("firstName") String firstName,
-                                                  @PathVariable("lastName") String lastName,
-                                                  @PathVariable("number") String number,
-                                                  @PathVariable("email") String email){
+    @PostMapping("/add")
+    public ResponseEntity<Customer> addNewCustomer(@RequestBody CustomerDto customerDto){
 
-        Customer customer = new Customer(firstName,lastName,number,email);
-        Integer idOfAddedCustomer = customerService.addNewCustomers(customer);
-        return new ResponseEntity<Integer>(idOfAddedCustomer, HttpStatus.OK);
+        Customer customer = new Customer(customerDto.getFirstName(),customerDto.getLastName(),customerDto.getContactNumber(), customerDto.getEmailAddress());
+        Customer savedCustomer = null;
+        try {
+            savedCustomer = customerService.addNewCustomers(customer);
+        } catch (InvalidCustomerDetails e) {
+            return new ResponseEntity<Customer>(new Customer(),HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<Customer>(savedCustomer, HttpStatus.CREATED);
     }
 
-    @GetMapping("/get/{id}")
-    public ResponseEntity<String> getCustomerById(@PathVariable("id") Integer Id)
-    {
-        Optional<Customer> customer = customerService.getCustomer(Id);
-        String response = "";
-        if(customer.isEmpty())
-        {
-            response += "No such customer exists";
-        }
-        else
-        {
-            response += "Name :"+customer.orElseThrow().getFirstName()+" "+ customer.orElseThrow().getLastName();
+    @GetMapping("/get")
+    public ResponseEntity<Customer> getCustomerById(@RequestParam Integer Id) {
+        Customer customer = null;
+        try {
+            customer = customerService.getCustomer(Id);
+        } catch (NoSuchElementException ex) {
+            return new ResponseEntity<Customer>((Customer) null, HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<String>(response,HttpStatus.OK);
+        return new ResponseEntity<Customer>(customer, HttpStatus.OK);
     }
 
-    @PostMapping("/apply/{id}")
-    public ResponseEntity<Integer> applyForCreditCard(@PathVariable("id") Integer Id)
+    @PostMapping("/apply")
+    public ResponseEntity<Application> applyForCreditCard(@RequestParam Integer customerId)
     {
-        Integer id = customerService.applyForCreditCard(Id);
-        return new ResponseEntity<Integer>(id,HttpStatus.OK);
+        Application application = null;
+        try {
+            application = customerService.applyForCreditCard(customerId);
+        }
+        catch(NoSuchElementException ex)
+        {
+            return new ResponseEntity<Application>((Application) null,HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<Application>(application,HttpStatus.CREATED);
     }
 
     @CrossOrigin(origins ="http://localhost:4200")
-    @GetMapping("/notifications/{id}")
-    public ResponseEntity<List<Notification>> getNotifications(@PathVariable("id") Integer Id)
+    @GetMapping("/notifications")
+    public ResponseEntity<List<Notification>> getNotifications(@RequestParam Integer customerId)
     {
-        List<Notification> notifications = customerService.getNotifications(Id);
+        List<Notification> notifications = null;
+        try{
+            notifications = customerService.getNotifications(customerId);
+        }
+        catch(NoSuchElementException ex)
+        {
+            return new ResponseEntity<List<Notification>>((List<Notification>) null,HttpStatus.NOT_FOUND);
+        }
+
         return new ResponseEntity<List<Notification>>(notifications,HttpStatus.OK);
     }
 }

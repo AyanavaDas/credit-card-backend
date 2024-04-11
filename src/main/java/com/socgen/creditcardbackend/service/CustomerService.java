@@ -1,5 +1,7 @@
 package com.socgen.creditcardbackend.service;
 
+import com.socgen.creditcardbackend.exception.InvalidCustomerDetails;
+import com.socgen.creditcardbackend.model.Application;
 import com.socgen.creditcardbackend.model.Customer;
 import com.socgen.creditcardbackend.model.Notification;
 import com.socgen.creditcardbackend.repository.ICustomerRepository;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -17,43 +20,57 @@ public class CustomerService implements ICustomerService {
     @Autowired
     private IApplicationService applicationService;
     @Override
-    public Integer addNewCustomers(Customer customer)
-    {
+    public Customer addNewCustomers(Customer customer) throws InvalidCustomerDetails {
         if(!CustomerValidation.ValidateEmail(customer.getEmailAddress())
                 || !CustomerValidation.ValidateNumber(customer.getContactNumber()))
         {
-            return -1;
+            throw new InvalidCustomerDetails("email or contact number is invalid");
         }
 
         Customer savedCustomer = customerRepository.save(customer);
-        return savedCustomer.getId();
+        return savedCustomer;
     }
 
     @Override
-    public Optional<Customer> getCustomer(Integer id)
+    public Customer getCustomer(Integer id)
     {
-        return customerRepository.findById(id);
-    }
-
-    @Override
-    public Integer applyForCreditCard(Integer Id)
-    {
-        if(getCustomer(Id).isEmpty())
+        Optional<Customer> customer = customerRepository.findById(id);
+        if(customer.isEmpty())
         {
-            return -1;
+            throw new NoSuchElementException("Customer for id :"+ id +" does not exist !");
+        }
+        else
+        {
+            return customer.orElseThrow();
+        }
+    }
+
+    @Override
+    public Application applyForCreditCard(Integer Id)
+    {
+        Customer customer = null;
+        try {
+            customer = getCustomer(Id);
+        }
+        catch(NoSuchElementException ex){
+            //throw exception here so that http responses can be differenciated at controller
+            throw new NoSuchElementException(ex.getMessage());
         }
 
-        return applicationService.applyForCreditCard(getCustomer(Id).get());
+        return applicationService.applyForCreditCard(getCustomer(Id));
     }
 
     @Override
     public List<Notification> getNotifications(Integer Id)
     {
-        Optional<Customer> customer = getCustomer(Id);
-        if(customer.isEmpty())
-            return null;
-        else
-            return customer.orElseThrow().getNotifications();
+        Customer customer = null;
+        try {
+            customer = getCustomer(Id);
+        }
+        catch(NoSuchElementException ex){
+           throw new NoSuchElementException(ex.getMessage());
+        }
+        return customer.getNotifications();
     }
 }
 

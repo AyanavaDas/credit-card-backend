@@ -14,11 +14,9 @@ public class ApproverService implements IApproverService {
     @Autowired
     IApplicationService applicationService;
     @Override
-    public Integer addApprover(Approver approver)
+    public Approver addApprover(Approver approver)
     {
-
-        Approver newApprover = approverRepository.save(approver);
-        return newApprover.getId();
+        return approverRepository.save(approver);
     }
 
     @Override
