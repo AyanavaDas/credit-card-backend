@@ -16,19 +16,19 @@ public class ApplicationController {
     @Autowired
     private IApplicationService applicationService;
 
-    @GetMapping("/status/{id}")
-    public ResponseEntity<String> getApplicationStatus(@PathVariable("id") Integer Id)
+    @GetMapping("/status")
+    public ResponseEntity<String> getApplicationStatus(@RequestParam Integer Id)
     {
         try {
             Boolean status = applicationService.status(Id);
             if(status)
                 return new ResponseEntity<String>("Approved", HttpStatus.OK);
             else
-                return new ResponseEntity<String>("Not Approved", HttpStatus.OK);
+                return new ResponseEntity<String>("In progress", HttpStatus.OK);
         }
         catch (NoSuchElementException exception)
         {
-            return new ResponseEntity<String>("Application doesnot exist",HttpStatus.OK);
+            return new ResponseEntity<String>("Application doesnot exist",HttpStatus.NOT_FOUND);
         }
     }
 

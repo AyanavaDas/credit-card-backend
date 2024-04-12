@@ -20,12 +20,11 @@ public class CustomerController {
     @Autowired
     private ICustomerService customerService;
     @PostMapping("/add")
-    public ResponseEntity<Customer> addNewCustomer(@RequestBody CustomerDto customerDto){
-
-        Customer customer = new Customer(customerDto.getFirstName(),customerDto.getLastName(),customerDto.getContactNumber(), customerDto.getEmailAddress());
+    public ResponseEntity<Customer> addNewCustomer(@RequestBody CustomerDto customerDto)
+    {
         Customer savedCustomer = null;
         try {
-            savedCustomer = customerService.addNewCustomers(customer);
+            savedCustomer = customerService.addNewCustomers(customerDto);
         } catch (InvalidCustomerDetails e) {
             return new ResponseEntity<Customer>(new Customer(),HttpStatus.BAD_REQUEST);
         }

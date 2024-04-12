@@ -1,13 +1,13 @@
 package com.socgen.creditcardbackend.service;
 
+import com.socgen.creditcardbackend.dto.ApproverDto;
+import com.socgen.creditcardbackend.exception.InvalidApproverDetails;
 import com.socgen.creditcardbackend.model.Approver;
 
-import java.util.Optional;
-
 public interface IApproverService {
-    Approver addApprover(Approver approver);
+    Approver addApprover(ApproverDto approver) throws InvalidApproverDetails;
 
-    Optional<Approver> getApprover(Integer id);
+    Approver getApprover(Integer id);
 
     Boolean approveGivenApplication(Integer approverId, Integer applicationId);
 }

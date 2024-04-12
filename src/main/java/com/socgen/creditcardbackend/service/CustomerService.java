@@ -1,5 +1,6 @@
 package com.socgen.creditcardbackend.service;
 
+import com.socgen.creditcardbackend.dto.CustomerDto;
 import com.socgen.creditcardbackend.exception.InvalidCustomerDetails;
 import com.socgen.creditcardbackend.model.Application;
 import com.socgen.creditcardbackend.model.Customer;
@@ -9,6 +10,7 @@ import com.socgen.creditcardbackend.util.CustomerValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -20,15 +22,44 @@ public class CustomerService implements ICustomerService {
     @Autowired
     private IApplicationService applicationService;
     @Override
-    public Customer addNewCustomers(Customer customer) throws InvalidCustomerDetails {
-        if(!CustomerValidation.ValidateEmail(customer.getEmailAddress())
-                || !CustomerValidation.ValidateNumber(customer.getContactNumber()))
+    public Customer addNewCustomers(CustomerDto customerDto) throws InvalidCustomerDetails {
+        if(!CustomerValidation.ValidateEmail(customerDto.getEmailAddress())
+                || !CustomerValidation.ValidateNumber(customerDto.getContactNumber()))
         {
             throw new InvalidCustomerDetails("email or contact number is invalid");
         }
 
-        Customer savedCustomer = customerRepository.save(customer);
-        return savedCustomer;
+        long count = CheckIfCustomerExists(customerDto);
+
+        if(count > 0)
+        {
+            throw new InvalidCustomerDetails("customer with same email and contact number already exists");
+        }
+
+        Customer customer = new Customer(
+                                customerDto.getFirstName(),
+                                customerDto.getLastName(),
+                                customerDto.getContactNumber(),
+                                customerDto.getEmailAddress());
+
+        return customerRepository.save(customer);
+    }
+
+    private long CheckIfCustomerExists(CustomerDto customer) {
+        //NOT WORKING
+
+        Iterable<Customer> allCustomer = customerRepository.findAll();
+        List<Customer> customerList= new ArrayList<Customer>();
+        for(Customer cust :allCustomer)
+        {
+            customerList.add(cust);
+        }
+        return customerList
+                .stream()
+                .filter(customers ->
+                            customers.getEmailAddress() == customer.getEmailAddress()
+                                    && customers.getContactNumber() == customer.getContactNumber())
+                .count();
     }
 
     @Override

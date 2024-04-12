@@ -13,13 +13,13 @@ import java.util.Optional;
 @Service
 public class ApplicationService implements IApplicationService {
     @Autowired
-        private IApplicationRepository applicationRepository;
-        @Autowired
-        private INotificationRepository notificationRepository;
+    private IApplicationRepository applicationRepository;
+    @Autowired
+    private INotificationRepository notificationRepository;
 
-        @Override
-        public Application applyForCreditCard(Customer customer)
-        {
+    @Override
+    public Application applyForCreditCard(Customer customer)
+    {
         Application newApplication = new Application(customer,false);
         return applicationRepository.save(newApplication);
     }
