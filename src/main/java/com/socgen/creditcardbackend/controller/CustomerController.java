@@ -26,7 +26,7 @@ public class CustomerController {
         try {
             savedCustomer = customerService.addNewCustomers(customerDto);
         } catch (InvalidCustomerDetails e) {
-            return new ResponseEntity<Customer>(new Customer(),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Customer>((Customer) null,HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<Customer>(savedCustomer, HttpStatus.CREATED);
     }

@@ -9,11 +9,10 @@ import com.socgen.creditcardbackend.repository.ICustomerRepository;
 import com.socgen.creditcardbackend.util.CustomerValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 @Service
 public class CustomerService implements ICustomerService {
@@ -46,19 +45,14 @@ public class CustomerService implements ICustomerService {
     }
 
     private long CheckIfCustomerExists(CustomerDto customer) {
-        //NOT WORKING
 
         Iterable<Customer> allCustomer = customerRepository.findAll();
-        List<Customer> customerList= new ArrayList<Customer>();
-        for(Customer cust :allCustomer)
-        {
-            customerList.add(cust);
-        }
-        return customerList
-                .stream()
+
+        return StreamSupport
+                .stream(allCustomer.spliterator(),false)
                 .filter(customers ->
-                            customers.getEmailAddress() == customer.getEmailAddress()
-                                    && customers.getContactNumber() == customer.getContactNumber())
+                            customers.getEmailAddress().equals(customer.getEmailAddress())
+                                    && customers.getContactNumber().equals(customer.getContactNumber()))
                 .count();
     }
 
@@ -84,7 +78,7 @@ public class CustomerService implements ICustomerService {
             customer = getCustomer(Id);
         }
         catch(NoSuchElementException ex){
-            //throw exception here so that http responses can be differenciated at controller
+            //throw exception here so that http responses can be differentiated at controller
             throw new NoSuchElementException(ex.getMessage());
         }
 

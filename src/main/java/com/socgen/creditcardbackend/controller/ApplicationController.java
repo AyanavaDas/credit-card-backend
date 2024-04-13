@@ -1,13 +1,11 @@
 package com.socgen.creditcardbackend.controller;
 
-import com.socgen.creditcardbackend.model.Application;
 import com.socgen.creditcardbackend.service.IApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController

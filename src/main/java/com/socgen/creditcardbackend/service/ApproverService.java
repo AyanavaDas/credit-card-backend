@@ -6,11 +6,9 @@ import com.socgen.creditcardbackend.model.Approver;
 import com.socgen.creditcardbackend.repository.IApproverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 @Service
 public class ApproverService implements IApproverService {
@@ -33,19 +31,13 @@ public class ApproverService implements IApproverService {
 
     private long CheckIfApproverExists(ApproverDto approver) {
 
-        //NOT WORKING
-        
         Iterable<Approver> allApprovers = approverRepository.findAll();
-        List<Approver> approverList = new ArrayList<Approver>();
-        for (Approver approvers : allApprovers)
-        {
-            approverList.add(approvers);
-        }
-        return approverList
-                .stream()
+
+        return StreamSupport
+                .stream(allApprovers.spliterator(),false)
                 .filter(approvers ->
-                        approvers.getFirstName() == approvers.getFirstName()
-                                && approvers.getLastName() == approver.getLastName())
+                        approvers.getFirstName() .equals(approver.getFirstName())
+                                && approvers.getLastName().equals(approver.getLastName()))
                 .count();
     }
 
