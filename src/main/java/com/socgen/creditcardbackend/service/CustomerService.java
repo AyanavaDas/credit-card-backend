@@ -44,7 +44,8 @@ public class CustomerService implements ICustomerService {
         return customerRepository.save(customer);
     }
 
-    private long CheckIfCustomerExists(CustomerDto customer) {
+    //made public to mock this method
+    public long CheckIfCustomerExists(CustomerDto customer) {
 
         Iterable<Customer> allCustomer = customerRepository.findAll();
 
