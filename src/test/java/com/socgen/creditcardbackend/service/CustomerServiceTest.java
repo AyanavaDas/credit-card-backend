@@ -38,8 +38,8 @@ public class CustomerServiceTest {
     @Test
     public void ShouldAddNewCustomerWithValidDetails()
     {
-        String email  = "test@gmail.com";
-        String contact = "1234567890";
+        String email  = "t@gmail.com";
+        String contact = "1234567800";
         CustomerDto customer = new CustomerDto("Timo","Werner",contact,email);
 
         assertDoesNotThrow(()->{
