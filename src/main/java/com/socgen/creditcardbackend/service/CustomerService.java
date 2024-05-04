@@ -1,12 +1,15 @@
 package com.socgen.creditcardbackend.service;
 
 import com.socgen.creditcardbackend.dto.CustomerDto;
+import com.socgen.creditcardbackend.dto.UserDto;
+import com.socgen.creditcardbackend.enums.UserRoles;
 import com.socgen.creditcardbackend.exception.InvalidCustomerDetails;
 import com.socgen.creditcardbackend.model.Application;
 import com.socgen.creditcardbackend.model.Customer;
 import com.socgen.creditcardbackend.model.Notification;
 import com.socgen.creditcardbackend.repository.ICustomerRepository;
 import com.socgen.creditcardbackend.util.CustomerValidation;
+import com.socgen.creditcardbackend.util.PasswordValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -20,6 +23,8 @@ public class CustomerService implements ICustomerService {
     private ICustomerRepository customerRepository;
     @Autowired
     private IApplicationService applicationService;
+    @Autowired
+    private IUserService userService;
     @Override
     public Customer addNewCustomers(CustomerDto customerDto) throws InvalidCustomerDetails {
         if(!CustomerValidation.ValidateEmail(customerDto.getEmailAddress())
@@ -40,8 +45,11 @@ public class CustomerService implements ICustomerService {
                                 customerDto.getLastName(),
                                 customerDto.getContactNumber(),
                                 customerDto.getEmailAddress());
-
-        return customerRepository.save(customer);
+        Customer savedCustomer = customerRepository.save(customer);
+        String hash= PasswordValidation.encodePassword(customerDto.getPassword());
+        UserDto newUser= new UserDto(customerDto.getEmailAddress(), UserRoles.CUSTOMER.getValue(), hash, savedCustomer.getId());
+        userService.addUser(newUser);
+        return savedCustomer;
     }
 
     //made public to mock this method

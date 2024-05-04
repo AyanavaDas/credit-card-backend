@@ -19,6 +19,7 @@ import java.util.NoSuchElementException;
 public class CustomerController {
     @Autowired
     private ICustomerService customerService;
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/add")
     public ResponseEntity<Customer> addNewCustomer(@RequestBody CustomerDto customerDto)
     {
@@ -43,6 +44,7 @@ public class CustomerController {
         return new ResponseEntity<Customer>(customer, HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/apply")
     public ResponseEntity<Application> applyForCreditCard(@RequestParam Integer customerId)
     {

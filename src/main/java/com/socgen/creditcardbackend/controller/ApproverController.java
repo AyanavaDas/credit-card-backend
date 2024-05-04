@@ -16,6 +16,7 @@ import java.util.NoSuchElementException;
 public class ApproverController {
     @Autowired
     private IApproverService approverService;
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/add")
     public ResponseEntity<Approver> addNewApprover(@RequestBody ApproverDto approverDto)
     {
@@ -41,6 +42,7 @@ public class ApproverController {
         return new ResponseEntity<Approver>(approver,HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PutMapping("/approve")
     public ResponseEntity<Boolean> approve(@RequestParam Integer approverId,
                                            @RequestParam Integer applicationId)
