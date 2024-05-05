@@ -18,9 +18,10 @@ public class UserController {
 
     @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/approver/login")
-    public ResponseEntity<Approver> loginAsApprover(@RequestBody LoginUser user)
+    public ResponseEntity<Approver> loginAsApprover(@RequestParam String userId,@RequestParam String rawPassword)
     {
         Approver approverUser = null;
+        LoginUser user = new LoginUser(userId,rawPassword);
         try{
             approverUser = userService.loginAsApprover(user);
         }
@@ -33,9 +34,10 @@ public class UserController {
 
     @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/customer/login")
-    public ResponseEntity<Customer> loginAsCustomer(@RequestBody LoginUser user)
+    public ResponseEntity<Customer> loginAsCustomer(@RequestParam String userId,@RequestParam String rawPassword)
     {
         Customer customerUser= null;
+        LoginUser user = new LoginUser(userId,rawPassword);
         try{
             customerUser = userService.loginAsCustomer(user);
         }
