@@ -32,6 +32,7 @@ public class CustomerController {
         return new ResponseEntity<Customer>(savedCustomer, HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/get")
     public ResponseEntity<Customer> getCustomerById(@RequestParam Integer Id) {
         Customer customer = null;

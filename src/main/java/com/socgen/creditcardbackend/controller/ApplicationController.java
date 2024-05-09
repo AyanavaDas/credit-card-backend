@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -35,5 +36,13 @@ public class ApplicationController {
     public ResponseEntity<Iterable> getAllApplications()
     {
         return new ResponseEntity<Iterable>(applicationService.getAllApplications(),HttpStatus.OK);
+    }
+
+    //add validations and exception handling later
+    @CrossOrigin(origins = "http://localhost:4200")
+    @GetMapping("/get")
+    public ResponseEntity<List> getApplicationsById(@RequestParam Integer id)
+    {
+        return new ResponseEntity<List>(applicationService.getAllApplicationsById(id),HttpStatus.OK);
     }
 }

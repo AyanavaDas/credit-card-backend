@@ -8,6 +8,7 @@ import com.socgen.creditcardbackend.repository.INotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,7 +21,7 @@ public class ApplicationService implements IApplicationService {
     @Override
     public Application applyForCreditCard(Customer customer)
     {
-        Application newApplication = new Application(customer,false);
+        Application newApplication = new Application(customer,false, customer.getId());
         return applicationRepository.save(newApplication);
     }
 
@@ -62,4 +63,7 @@ public class ApplicationService implements IApplicationService {
     {
         return applicationRepository.findAll();
     }
+
+    @Override
+    public List<Application> getAllApplicationsById(Integer id){return applicationRepository.findAllBy(id);}
 }
