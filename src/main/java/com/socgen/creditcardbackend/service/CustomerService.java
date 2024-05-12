@@ -61,7 +61,7 @@ public class CustomerService implements ICustomerService {
                 .stream(allCustomer.spliterator(),false)
                 .filter(customers ->
                             customers.getEmailAddress().equals(customer.getEmailAddress())
-                                    && customers.getContactNumber().equals(customer.getContactNumber()))
+                                    || customers.getContactNumber().equals(customer.getContactNumber()))
                 .count();
     }
 

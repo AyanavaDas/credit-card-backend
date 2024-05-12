@@ -47,7 +47,7 @@ public class ApproverService implements IApproverService {
                 .stream(allApprovers.spliterator(),false)
                 .filter(approvers ->
                         approvers.getFirstName() .equals(approver.getFirstName())
-                                && approvers.getLastName().equals(approver.getLastName()))
+                                || approvers.getLastName().equals(approver.getLastName()))
                 .count();
     }
 

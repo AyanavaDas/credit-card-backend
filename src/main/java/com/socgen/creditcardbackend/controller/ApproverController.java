@@ -29,6 +29,7 @@ public class ApproverController {
         return new ResponseEntity<Approver>(savedApprover, HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/get")
     public ResponseEntity<Approver> getApprover(@RequestParam Integer Id)
     {
